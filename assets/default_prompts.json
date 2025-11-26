@@ -1,0 +1,23 @@
+{
+  "Categorization_Prompt": {
+    "name": "Categorization",
+    "description": "Guides the LLM on how to classify emails into operational tags.",
+    "template": "Analyze the following email and categorize it using EXACTLY ONE of these four tags: 'Important', 'Newsletter', 'Spam', or 'To-Do'.\n\nCATEGORIZATION RULES (apply in this order):\n\n1. SPAM - Assign if email contains:\n   - Phishing attempts (asking for passwords, SSN, financial info)\n   - Suspicious security alerts from unknown sources\n   - 'Pre-approved' loans or credit offers\n   - 'Act fast', 'limited time', 'click here now'\n   - Requests to verify account credentials\n\n2. NEWSLETTER - Assign if email:\n   - Contains 'digest', 'weekly update', 'monthly newsletter'\n   - From marketing teams or 'noreply@' addresses\n   - Has 'unsubscribe' link or 'view in browser'\n   - Is purely informational with NO action required\n   - Company-wide announcements, policy updates (no action needed)\n   - Status updates that say 'No Action Needed'\n\n3. IMPORTANT - Assign if email:\n   - From executives (CEO, Director, VP) AND contains 'URGENT'\n   - Contains critical deadlines with consequences\n   - Requires immediate attention from leadership\n\n4. TO-DO - Assign if email:\n   - Contains direct action requests: 'please confirm', 'please send', 'update', 'review', 'complete'\n   - Meeting invitations requiring response\n   - Task assignments with deadlines\n   - Questions requiring your response\n\nWhen in doubt between Newsletter and To-Do:\n- If it's purely informational → Newsletter\n- If it asks you to DO something → To-Do\n\nRespond with ONLY the tag name (Important, Newsletter, Spam, or To-Do). No explanation.",
+    "output_format": "text",
+    "json_schema": null
+  },
+  "Action_Extraction_Prompt": {
+    "name": "Action Item Extraction",
+    "description": "Guides the LLM on extracting structured tasks and deadlines.",
+    "template": "You are an expert task extraction bot. Read the provided email and extract ALL actionable tasks that the user must perform.\n\nRULES:\n1. Only extract tasks that require USER action (not what others will do)\n2. Be specific about what needs to be done\n3. Extract explicit deadlines (e.g., 'EOD today', 'Wednesday morning', 'Friday')\n4. If no deadline mentioned, use 'None'\n5. For meeting invitations, the task is 'Respond to meeting invitation' or 'Accept/Decline meeting'\n\nYour response MUST be valid JSON that strictly follows this schema:\n{\n  \"action_items\": [\n    {\n      \"task\": \"Clear description of what to do\",\n      \"deadline\": \"Explicit deadline or 'None'\"\n    }\n  ]\n}\n\nIf NO actionable tasks exist (e.g., pure newsletter, spam, status update), return:\n{\n  \"action_items\": []\n}",
+    "output_format": "json",
+    "json_schema": "[{ \"task\": \"The extracted task description.\", \"deadline\": \"The explicit deadline or 'None'.\" }]"
+  },
+  "Auto_Reply_Prompt": {
+    "name": "Auto-Reply Draft",
+    "description": "Guides the LLM on generating situational draft replies for user review.",
+    "template": "Analyze the email's intent and draft an appropriate reply. Follow these rules:\n\n1. MEETING REQUESTS (contains 'meeting', 'schedule', 'call', 'sync', 'brainstorm'):\n   Draft: Polite acceptance + request for agenda\n   Example: 'Thank you for the invitation. I'm available. Could you please send a brief agenda so I can come prepared? Looking forward to it!'\n\n2. TASK REQUESTS (contains 'please update', 'please review', 'task request'):\n   Draft: Acknowledgment + commitment to follow up\n   Example: 'Thanks for reaching out. I've received your request and will review it. I'll get back to you with an update soon.'\n\n3. QUESTIONS (contains '?' or 'question about'):\n   Draft: Acknowledgment + promise to respond\n   Example: 'Thanks for your question. Let me look into this and I'll get back to you with a detailed response shortly.'\n\n4. NEWSLETTERS, SPAM, ANNOUNCEMENTS:\n   Return: Empty string (no reply needed)\n\n5. OTHER EMAILS:\n   Draft: Generic professional acknowledgment\n   Example: 'Thank you for your email. I've received it and will respond accordingly.'\n\nIMPORTANT:\n- Keep drafts concise (2-3 sentences maximum)\n- Use professional but friendly tone\n- Never commit to specific deadlines without user approval\n- If email is spam/newsletter, return empty string ''\n\nRespond with ONLY the draft text, no preamble.",
+    "output_format": "text",
+    "json_schema": null
+  }
+}

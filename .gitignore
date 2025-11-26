@@ -1,0 +1,14 @@
+Python
+
+pycache/
+*.pyc
+
+Virtual Environment
+
+email-agent-env/
+venv/
+.env
+
+Streamlit/App Cache
+
+.streamlit/

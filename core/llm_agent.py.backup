@@ -1,0 +1,205 @@
+import os
+import json
+from typing import List, Dict
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
+# Placeholder: Replace with your chosen LLM SDK
+from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate
+from .models import EmailRecord, PromptConfiguration, ActionItem, ActionItemList
+from .prompt_manager import PromptManager # To access emails and prompts
+
+# --- Configuration ---
+# Set up the LLM model (e.g., using OpenAI API Key from environment variables)
+# NOTE: Replace ChatOpenAI with the SDK for the LLM you choose (e.g., Google GenAI, etc.)
+# You should set an environment variable for the API Key (e.g., OPENAI_API_KEY)
+LLM = ChatGroq(model="mixtral-8x7b-32768", temperature=0) # Use a reliable model for structured output
+#LLM = None # Placeholder until you install and configure your specific LLM SDK
+
+class EmailLLMAgent:
+    """
+    Handles all interactions with the Large Language Model (LLM).
+    It takes emails and prompts, constructs the LLM request, and returns structured data.
+    """
+    def __init__(self, prompt_manager: PromptManager):
+        # A simple check to ensure the LLM placeholder is initialized when ready
+        if LLM is None:
+             print("WARNING: LLM is not initialized. Mocking responses.")
+        
+        self.manager = prompt_manager
+
+    def _get_prompt_template(self, prompt_key: str) -> str:
+        """Retrieves the template text for a specific prompt key."""
+        config = self.manager.get_prompt_config()
+        # Use getattr to dynamically access the prompt template object
+        return getattr(config, prompt_key).template
+
+    def process_email_ingestion(self, email_id: int):
+        """
+        Runs the initial ingestion pipeline: Categorization and Action Extraction.
+        This fulfills the Phase 1 requirement to run categorization and action item prompts via LLM[cite: 103, 104].
+        """
+        email = self.manager.get_email_by_id(email_id)
+        if not email:
+            print(f"Email ID {email_id} not found.")
+            return
+
+        # 1. Categorization
+        category = self.categorize_email(email)
+        print(f"Email {email_id} categorized as: {category}")
+        
+        # 2. Action Item Extraction
+        action_items = self.extract_action_items(email)
+        print(f"Email {email_id} actions: {len(action_items)}")
+
+        # 3. Auto-Drafting (Optional during ingestion, but good to show)
+        draft_reply = self.draft_auto_reply(email)
+        print(f"Email {email_id} auto-drafted.")
+
+        # 4. Save results to state [cite: 105]
+        self.manager.save_email_state(
+            email_id=email_id,
+            category=category,
+            action_items=[item.dict() for item in action_items], # Convert Pydantic models back to dicts for manager storage
+            draft_reply=draft_reply
+        )
+        # Note: The UI will need to be updated after this call[cite: 106].
+
+    def categorize_email(self, email: EmailRecord) -> str:
+        """Categorizes an email based on the user-defined Categorization Prompt."""
+        prompt_template = self._get_prompt_template("Categorization_Prompt")
+        
+        # Construct the full prompt
+        full_prompt = ChatPromptTemplate.from_template(prompt_template + "\n\nEMAIL CONTENT: {email_body}")
+
+        if LLM:
+            chain = full_prompt | LLM | StrOutputParser()
+            try:
+                # LLM call for categorization
+                result = chain.invoke({"email_body": email.body})
+                return result.strip()
+            except Exception as e: # Handles LLM errors gracefully [cite: 48]
+                print(f"LLM Error during categorization: {e}")
+                return "Error/Uncategorized"
+        else:
+            # Mocking response for testing
+            return "To-Do" if "action" in email.subject.lower() else "Newsletter"
+
+    def extract_action_items(self, email: EmailRecord) -> List[ActionItem]:
+        """Extracts structured action items using the user-defined Action Extraction Prompt."""
+        prompt_template = self._get_prompt_template("Action_Extraction_Prompt")
+        
+        # LangChain setup for structured output (JSON)
+        parser = JsonOutputParser(pydantic_object=ActionItemList)
+
+        # We inject the desired JSON schema into the prompt for the LLM [cite: 40]
+        format_instructions = parser.get_format_instructions()
+
+        full_prompt = ChatPromptTemplate.from_template(
+            prompt_template + "\n\nEMAIL CONTENT: {email_body}\n\n{format_instructions}"
+        )
+
+        if LLM:
+            chain = full_prompt | LLM | parser
+            try:
+                # LLM call for action extraction
+                result_wrapper = chain.invoke({
+                    "email_body": email.body,
+                    "format_instructions": format_instructions
+                })
+                # Result is already a list of ActionItem dicts due to the Pydantic parser
+                result_list_of_dicts = result_wrapper.get('action_items', [])
+                return [ActionItem(**item) for item in result_list_of_dicts]
+            except Exception as e: # Handles LLM errors gracefully [cite: 48]
+                print(f"LLM Error during action extraction: {e}")
+                return []
+        else:
+            # Mocking structured response for testing
+            if "request" in email.subject.lower() or "urgent" in email.subject.lower():
+                return [ActionItem(task="Review the main task", deadline="EOD Tomorrow")]
+            return []
+
+    def draft_auto_reply(self, email: EmailRecord) -> str:
+        """Drafts a reply based on the Auto-Reply Draft Prompt[cite: 7, 142]."""
+        prompt_template = self._get_prompt_template("Auto_Reply_Prompt")
+
+        full_prompt = ChatPromptTemplate.from_template(prompt_template + "\n\nEMAIL CONTENT: {email_body}")
+
+        if LLM:
+            chain = full_prompt | LLM | StrOutputParser()
+            try:
+                # LLM call for drafting
+                draft_text = chain.invoke({"email_body": email.body})
+                return draft_text.strip()
+            except Exception as e:
+                print(f"LLM Error during reply drafting: {e}")
+                return "Agent failed to draft a reply."
+        else:
+            # Mocking response for testing
+            if "meeting" in email.subject.lower() or "call" in email.body.lower():
+                return "Hello, I can attend. Could you please send over a brief agenda for the meeting first? Thanks!"
+            return ""
+
+    # --- Phase 2: Chat-Based Interaction Logic [cite: 107] ---
+
+    def handle_chat_query(self, user_query: str, email_id: int | None = None) -> str:
+        """
+        Handles complex chat queries, combining user instruction, email context, and system prompts[cite: 125].
+        """
+        # 1. Determine Context
+        email_context = ""
+        if email_id is not None:
+            email = self.manager.get_email_by_id(email_id)
+            if email:
+                email_context = f"\n\n--- SELECTED EMAIL CONTENT ---\nSubject: {email.subject}\nBody: {email.body}"
+                
+                # If the query is to draft a reply, we can reuse the draft_auto_reply logic or use a generic reply prompt
+                if "draft a reply" in user_query.lower(): # Generate replies [cite: 31, 137]
+                    draft = self.draft_auto_reply(email)
+                    return f"**Draft Generated:**\n\n{draft}"
+                
+                if "summarize" in user_query.lower(): # Summarize this email [cite: 111]
+                    # Use a general summarization prompt
+                    system_prompt = "You are a helpful assistant. Summarize the following email concisely."
+                
+                elif "tasks" in user_query.lower(): # What tasks do I need to do? [cite: 115]
+                    # Reuse the extracted action items
+                    items = self.manager.get_email_by_id(email_id).action_items
+                    if items:
+                        task_list = "\n".join([f"- {i.task} (Deadline: {i.deadline})" for i in items])
+                        return f"The extracted tasks from this email are:\n{task_list}"
+                    else:
+                        return "No specific action items were extracted for this email."
+        
+        # 2. Handle general inbox tasks ("Show me all urgent emails") [cite: 117]
+        if "show me all" in user_query.lower() or "urgent emails" in user_query.lower():
+            # This is a state management query, not an LLM query
+            target_category = "Important" if "urgent" in user_query.lower() else "To-Do"
+            
+            filtered_emails = [e for e in self.manager.get_emails() if e.category == target_category]
+            
+            if filtered_emails:
+                summary = f"Found {len(filtered_emails)} emails categorized as **{target_category}**:\n"
+                summary += "\n".join([f"- ID {e.id}: {e.subject}" for e in filtered_emails])
+                return summary
+            else:
+                return f"No emails currently categorized as **{target_category}**."
+
+        # 3. General LLM Query (e.g., Explain the email)
+        final_prompt_template = ChatPromptTemplate.from_messages([
+            ("system", "You are an intelligent Email Agent. Use the provided email content to answer the user's question. If no email is provided, answer generally."),
+            ("user", user_query + email_context)
+        ])
+
+        if LLM:
+            chain = final_prompt_template | LLM | StrOutputParser()
+            try:
+                # LLM call for chat interaction
+                result = chain.invoke({"user_query": user_query, "email_context": email_context})
+                return result.strip()
+            except Exception as e:
+                print(f"LLM Error during chat handling: {e}")
+                return "Sorry, I encountered an error while processing your request."
+        else:
+            # Mocking general chat response
+            return f"Mock response for query: '{user_query}'. If email ID {email_id} was selected, it was used as context."

@@ -1,0 +1,189 @@
+[
+  {
+    "id": 1,
+    "sender": "Director, Dr. Luna Krey <l.krey@oceanai.org>",
+    "subject": "URGENT: Quarterly Review Meeting Confirmation",
+    "timestamp": "2025-11-23T10:00:00Z",
+    "body": "Hi team, please confirm your attendance for the Q1 review meeting next Tuesday at 9 AM. I need all department heads to come prepared with slides showing budget spend variance. Failure to attend will impact project review. Confirm by EOD today.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 2,
+    "sender": "Matt Palmer <matt@mail.replit.com>",
+    "subject": "Exciting Replit Updates: Mobile, New Agent & Assistant, and More!",
+    "timestamp": "2025-11-23T08:30:00Z",
+    "body": "Matt with Replit here ✌️ February was an incredibly busy month—I'm excited to share what we've been up to. Last month's updates include: The new and improved Replit Mobile App Building iOS & Android apps on Replit (from the Mobile App if you'd like!) Agent v2 🤯 Claude 3.7 Sonnet support and much, much more!",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 3,
+    "sender": "Suzzie Shaun <noreply@fintechloan.xyz>",
+    "subject": "Congratulations! You've been pre-approved for a loan!",
+    "timestamp": "2025-11-23T11:05:00Z",
+    "body": "We noticed your excellent credit score and have pre-approved you for a low-interest loan of $50,000. Simply click the link below and provide your social security number to claim your funds. Act fast! This offer expires soon.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 4,
+    "sender": "Project Manager, Mike Wasowski <mike.wazu@oceanai.org>",
+    "subject": "Task Request: Update the System Architecture Diagram",
+    "timestamp": "2025-11-22T16:15:00Z",
+    "body": "Hi, I need the final system architecture diagram updated with the new cloud migration details. Please make sure the documentation reflects the change. This needs to be completed and uploaded to Drive by Wednesday morning.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 5,
+    "sender": "Internal Comms <updates@oceanai.org>",
+    "subject": "OceanAI Company-wide Policy Change Notification",
+    "timestamp": "2025-11-22T10:30:00Z",
+    "body": "This email contains an update to our internal travel and expense policy, effective January 1st. Please review the attached PDF for details. No action is required other than acknowledging the new policy.",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 6,
+    "sender": "Recruiter, Lucy Mirk <l.mirk@recruiters.net>",
+    "subject": "Follow-up: Interested in a Senior Data Scientist role?",
+    "timestamp": "2025-11-21T09:00:00Z",
+    "body": "I hope this email finds you well. I came across your profile and think you'd be a perfect fit for a Senior Data Scientist position we're recruiting for. Let me know if you are free for a quick introductory chat.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 7,
+    "sender": "Scheduler Bot <scheduler@corp.com>",
+    "subject": "Invitation: Brainstorm on New Sensor Array",
+    "timestamp": "2025-11-20T14:00:00Z",
+    "body": "You have been invited to a brainstorming session on the new 'Kraken' sensor array. The meeting is scheduled for Thursday at 2 PM. Please click 'Accept' or 'Decline' in the calendar invite attached. Please bring any initial sketches or notes you may have.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 8,
+    "sender": "Project Lead, Robin Swift <c.davis@oceanai.org>",
+    "subject": "Project Triton Weekly Status Update (No Action Needed)",
+    "timestamp": "2025-11-19T17:00:00Z",
+    "body": "Just providing a quick update that the core team successfully completed Phase 1 testing. We are on track for the Dec 15th deadline. Great work, team!",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 9,
+    "sender": "Tech Support <support@global-login.co>",
+    "subject": "Security Alert: Unauthorized Login Detected",
+    "timestamp": "2025-11-19T06:45:00Z",
+    "body": "We detected suspicious login activity on your account from an unknown IP address in Russia. To secure your account, click here immediately to change your password and verify your credentials.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 10,
+    "sender": "Facilities Team <facilities@oceanai.org>",
+    "subject": "Building Maintenance Notice for Floor 3",
+    "timestamp": "2025-11-18T12:00:00Z",
+    "body": "Please be advised that the air conditioning unit on floor 3 will be undergoing maintenance from 1 PM to 3 PM on Monday. Expect some minor noise disruption during this period. We apologize for any inconvenience.",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 11,
+    "sender": "Vendor, Will Turner <will.turner@suppliers.com>",
+    "subject": "Invoice 4422 Due Next Week",
+    "timestamp": "2025-11-17T15:30:00Z",
+    "body": "This is a friendly reminder that invoice #4422 for the sensor shipment is due on Friday. Please process the payment internally. Send a confirmation receipt to me once payment is initiated.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 12,
+    "sender": "Event Coordinator <info@oceansymposium.org>",
+    "subject": "Final Call: Early Bird Tickets for the Annual Ocean Symposium",
+    "timestamp": "2025-11-17T09:15:00Z",
+    "body": "Our early bird pricing for the 2026 Ocean Symposium ends this week! Don't miss out on presentations by leading marine engineers and scientists. This is strictly promotional content.",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 13,
+    "sender": "Team Member, Holly Wheeler <f.green@oceanai.org>",
+    "subject": "Question about the data structure for Phase 2",
+    "timestamp": "2025-11-16T14:50:00Z",
+    "body": "Could you briefly explain the difference between the primary and secondary data structures used in Phase 2? I'm documenting it and want to ensure I have the correct terminology. Please reply when you have a moment.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 14,
+    "sender": "Project Manager, Mike Wasowski <mike.wazu@oceanai.org>",
+    "subject": "Follow-up: Need help with the deployment script",
+    "timestamp": "2025-11-16T10:10:00Z",
+    "body": "I'm running into an error with the deployment script. Could we jump on a quick call at 3 PM today to debug it? If that time doesn't work, please suggest an alternative time tomorrow.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 15,
+    "sender": "CEO, Dr. Luna Krey <l.krey@oceanai.org>",
+    "subject": "Important Project Milestone Reached",
+    "timestamp": "2025-11-15T16:00:00Z",
+    "body": "Fantastic news! The 'Deep Diver' project has hit its final integration milestone ahead of schedule. Thank you all for your hard work. This is purely a celebration announcement.",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 16,
+    "sender": "Marketing Team <news@deepsea.com>",
+    "subject": "The Deep Sea Tech Digest: New AUV Model Released!",
+    "timestamp": "2025-11-27T08:30:00Z",
+    "body": "Welcome to this week's Deep Sea Tech Digest! Read about the exciting release of our new, compact Autonomous Underwater Vehicle (AUV). This is an informational email only. Click here to unsubscribe.",
+    "is_read": false,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  },
+  {
+    "id": 17,
+    "sender": "Code Pen <support@codepen.io>",
+    "subject": "3D Images, New CSS Functions, and CSS Chess",
+    "timestamp": "2025-11-04T08:30:00Z",
+    "body": "This week's CodePen community highlights include a tutorial on crafting 3D layered images with CSS from Sunkanmi Fafowora, a collection of experiments with CSS if() and custom functions, and a pure CSS chessboard from Mark Boots. Plus, Una Kravets introduces range syntax for style queries, and Tigran_Yer and ghaste both play with corner-shape.",
+    "is_read": true,
+    "category": "",
+    "action_items": [],
+    "draft_reply": ""
+  }
+]

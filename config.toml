@@ -1,0 +1,19 @@
+# .streamlit/config.toml
+# Ocean Blue Theme Configuration
+
+[theme]
+# Ocean blue gradient colors
+primaryColor = "#0EA5E9"  # Bright ocean blue
+backgroundColor = "#0A1929"  # Deep ocean dark
+secondaryBackgroundColor = "#1E3A5F"  # Ocean depth blue
+textColor = "#E0F2FE"  # Light ocean foam
+
+# Font
+font = "sans serif"
+
+[server]
+port = 8501
+runOnSave = true
+
+[browser]
+gatherUsageStats = false

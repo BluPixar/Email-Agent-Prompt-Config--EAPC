@@ -1,0 +1,232 @@
+#**EMAIL PRODUCTIVITY AGENT** - "EPOCH"
+
+A smart, prompt-driven email management system that automatically categorizes emails, extracts action items, and drafts replies using LLM technology. 
+Built with Streamlit and LangChain.
+
+What This Does
+This agent processes your inbox (currently using mock data) and handles the boring stuff automatically:
+
+-Categorizes emails into Important, To-Do, Newsletter, or Spam
+-Extracts action items with deadlines so you don't miss anything
+-Auto-drafts replies based on email context
+-Chat interface to interact with individual emails naturally
+
+The cool part? You can customize how it behaves by editing the prompts that guide the AI. No code changes needed.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**TECH STACK**
+
+Frontend: Streamlit (Python-based web UI)
+LLM Integration: LangChain + Groq API (using Mixtral-8x7b)
+Data Models: Pydantic for type safety and validation
+Storage: JSON files for mock data and prompt configurations
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**PRODUCT STRUCTURE**
+
+<img width="892" height="391" alt="image" src="https://github.com/user-attachments/assets/c51c38f0-039a-4c31-b044-3c9e4cc018fe" />
+
+<img width="303" height="370" alt="image" src="https://github.com/user-attachments/assets/644f3e0b-17df-460c-8b3e-9c6165acdd31" />
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**SETUP INSTRUCTIONS**
+Prerequisites
+
+Python 3.9 or higher
+A Groq API key (free tier works fine)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+**INSTALLATION**
+
+1. Clone the repository
+    git clone <your-repo-url>
+    cd email-productivity-agent
+
+2. Install dependencies
+   pip install -r requirements.txt
+
+3. Set up your Groq API key
+You need to set this as an environment variable. The app expects GROQ_API_KEY.
+
+4. Run the application
+   streamlit run app.py
+The app should open automatically in your browser
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**How to Use**
+Basic Workflow
+<img width="1846" height="781" alt="image" src="https://github.com/user-attachments/assets/ded1e5b3-a10c-4d6c-86a8-420eae77eaf3" />
+
+Load Mock Inbox
+
+Go to the "Inbox & Ingestion" tab
+Click "Load Mock Inbox" to populate the system with 17 sample emails
+
+
+**Run Ingestion Pipeline**
+
+Click "Run Ingestion Pipeline" to process all emails
+The LLM will categorize each email, extract action items, and draft replies
+This takes about 10-15 seconds depending on your API response times
+<img width="1616" height="852" alt="image" src="https://github.com/user-attachments/assets/50c974ae-84fb-4c4d-8764-a9916e25122a" />
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**View Results**
+
+Check the "Priority Dashboard" tab to see urgent tasks and deadlines
+Or browse individual emails in the inbox list
+<img width="1199" height="629" alt="image" src="https://github.com/user-attachments/assets/53e8d528-3e50-4b64-9f20-2f28ed11c7e3" />
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**Chat with Emails**
+
+Select an email from the inbox
+Go to "Email Agent Chat" tab
+Ask questions like:
+
+"Summarize this email"
+"What tasks do I need to do?"
+"Draft a reply in a professional tone"
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**Customizing Prompts**
+The agent's behavior is controlled by three core prompts. You can edit them in the "Customize Prompts" tab.
+Categorization Prompt
+
+Uses a keyword-based UI (no need to write prompts manually)
+Add keywords for each category: Important, Spam, Newsletter, To-Do
+The system generates the prompt automatically based on your keywords
+
+**Action Extraction Prompt**
+
+Controls how tasks and deadlines are identified
+Expects JSON output with task and deadline fields
+Edit the raw prompt text if you want more control
+
+**Auto-Reply Prompt**
+
+Defines how draft responses are generated
+Can specify tone, length, and situational logic
+For example, meeting requests get "please send agenda" replies
+
+After editing prompts, click "Save" and rerun the ingestion pipeline to apply changes.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+**KEYBOARD SH0RTCUTS**
+Because who wants to click around all day:
+
+P - Run ingestion pipeline
+I - Jump to Inbox tab
+A - Jump to Agent chat tab
+D - Jump to Dashboard tab
+
+These only work when you're not actively typing in an input field.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+**Mock Data Details**
+The mock_inbox.json file contains 17 emails covering various scenarios:
+
+Urgent meeting confirmations (Important)
+Task requests with deadlines (To-Do)
+Company newsletters (Newsletter)
+Phishing attempts (Spam)
+Follow-up questions (To-Do)
+Status updates (Newsletter)
+Invoice reminders (To-Do)
+
+You can edit this file to test different email patterns or add your own test cases.
+
+Architecture Notes
+Prompt-Driven Design
+Everything the LLM does is controlled by user-configurable prompts stored in default_prompts.json. The agent doesn't have hardcoded behavior beyond fallback logic.
+When you edit a prompt in the UI, it updates the in-memory configuration. In a production system, this would persist to disk or a database.
+LLM Fallback Logic
+If the Groq API is unavailable (no API key, rate limits, network issues), the agent falls back to rule-based mock responses:
+
+Categorization: Keyword matching against subject/body
+Action extraction: Pattern detection for tasks and deadlines
+Reply drafting: Template-based responses
+
+This ensures the app remains functional even without LLM access, which is useful for testing and demos.
+State Management
+
+Emails are loaded into memory as Pydantic EmailRecord objects
+Processed results (category, action items, drafts) are stored on the email objects
+Streamlit's session state handles UI persistence across interactions
+
+In a real deployment, you'd replace the JSON files with a proper database (PostgreSQL, MongoDB, etc.).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**KNOWN LIMITATIONS**
+
+Mock data only: Gmail integration is planned but not implemented
+No persistence: Changes don't save between sessions (by design for demo purposes)
+Rate limits: Groq free tier has usage caps
+Single-user: No authentication or multi-user support
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+**FUTURE ENHANCEMENTS**
+Things I'd add if this were a production system:
+
+Real Gmail integration via OAuth 2.0
+Database storage (PostgreSQL with SQLAlchemy)
+Prompt versioning to track changes over time
+Batch processing for large inboxes
+Custom categories beyond the default four
+Undo/redo for prompt changes
+Email threading to handle conversation context
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+**TROUBLESHOOTING**
+
+-  "LLM not initialized" warning
+
+Check that your GROQ_API_KEY environment variable is set
+Verify the key is valid by testing it directly with the Groq API
+
+-  "Mock data not loading"
+
+Ensure assets/mock_inbox.json exists and is valid JSON
+Check file permissions
+
+-  "Ingestion pipeline hanging"
+
+Groq API might be slow or rate-limited
+Check console for error messages
+Try reducing the number of emails in mock_inbox.json
+
+-  "Categorization seems wrong" (27\11\25)
+
+Edit the categorization keywords in the "Customize Prompts" tab
+Rerun ingestion after saving changes
+Check if the mock categorization rules in llm_agent.py need adjustment
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**DEPENDENCIES**
+
+Key packages (see requirements.txt for full list):
+
+streamlit - Web UI framework
+langchain-groq - LLM integration
+langchain-core - Prompt templates and parsers
+pydantic - Data validation
+pandas - Data display
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+DATE: 29/11/25
+
+**Development Notes**
+If you want to extend this project:
+
+Add new prompt types: Update models.py and default_prompts.json
+Change LLM provider: Replace ChatGroq in llm_agent.py with any LangChain-compatible model
+Add real email: Implement Gmail API in a new module and call it from prompt_manager.py
+Improve UI: Streamlit supports custom CSS/JS via st.markdown() and components.html()
+
+The codebase is modular. Core logic lives in core/, UI lives in app.py, and data lives in assets/.
